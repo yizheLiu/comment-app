@@ -1,42 +1,31 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import CommentInput from "./CommentInput";
 import CommentList from "./CommentList";
 
+import wrapWithLoadData from "./wrapWithLoadData";
+
 class CommentApp extends Component {
-    constructor() {
-        super();
+    static propTypes = {
+        data: PropTypes.any,
+        saveData: PropTypes.func.isRequired
+    }
+
+    constructor(props) {
+        super(props);
         this.state = {
-            comments: []
+            comments: props.data||[]
         }
-    }
-
-    componentWillMount() {
-        this._loadComments();
-    }
-
-    _loadComments() {
-        let comments = localStorage.getItem('comments');
-        if (comments) {
-            comments = JSON.parse(comments);
-            this.setState({
-                comments
-            })
-        }
-    }
-
-    _saveComments(comments) {
-        localStorage.setItem('comments', JSON.stringify(comments));
     }
 
     handleDeleteComment(index) {
         console.log(index);
         const comments = this.state.comments;
-        comments.splice(index,1);
-        this.setState({
-            comments
-        })
-        this._saveComments(comments);
+        comments.splice(index, 1);
+        this.setState({comments});
+        this.props.saveData(comments);
     }
+
 
     handleSubmitComment(comment) {
         if (!comment) return;
@@ -44,10 +33,8 @@ class CommentApp extends Component {
         if (!comment.content) return alert('请输入评论内容');
         const comments = this.state.comments;
         comments.push(comment);
-        this.setState({
-            comments: this.state.comments
-        })
-        this._saveComments(comments);
+        this.setState({comments});
+        this.props.saveData(comments);
     }
 
     render() {
@@ -63,4 +50,5 @@ class CommentApp extends Component {
     }
 }
 
-export default CommentApp;
+CommentApp = wrapWithLoadData(CommentApp, 'comments')
+export default CommentApp
