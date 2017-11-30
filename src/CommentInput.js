@@ -1,8 +1,14 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import wrapWithLoadData from "./wrapWithLoadData";
+import ThemeSwitch from "./ThemeSwitch";
+import {connect} from "./react-redux";
 
 class CommentInput extends Component {
+    static contextTypes = {
+        store: PropTypes.object
+    }
+
     static propTypes = {
         onSubmit: PropTypes.func,
         data: PropTypes.any,
@@ -13,13 +19,21 @@ class CommentInput extends Component {
         super(props);
         this.state = {
             username: props.data || [],
-            content: ''
+            content: '',
+            themeColor: ''
         }
+    }
+
+    componentWillMount() {
+        const {store} = this.context
+        this._updateThemeColor()
+        store.subscribe(() => this._updateThemeColor())
     }
 
     componentDidMount() {
         this.textarea.focus();
     }
+
 
     handleUsernameChange(event) {
         this.setState({
@@ -48,9 +62,15 @@ class CommentInput extends Component {
         this.props.saveData(event.target.value)
     }
 
+    _updateThemeColor() {
+        const {store} = this.context
+        const state = store.getState()
+        this.setState({themeColor: state.themeColor})
+    }
+
     render() {
         return (
-            <div className='comment-input'>
+            <div className='comment-input' style={{borderColor: this.state.themeColor}}>
                 <div className='comment-field'>
                     <span className='comment-field-name'>用户名:</span>
                     <div className='comment-field-input'>
@@ -72,10 +92,12 @@ class CommentInput extends Component {
                 <div className='comment-field-button'>
                     <button onClick={this.handleSubmit.bind(this)}>发布</button>
                 </div>
+                <ThemeSwitch/>
             </div>
         )
     }
 }
 
 CommentInput = wrapWithLoadData(CommentInput, 'username');
+
 export default CommentInput
