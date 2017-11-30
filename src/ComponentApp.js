@@ -1,10 +1,12 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import {Provider} from 'react-redux';
+import {createStore} from 'redux';
+
 import CommentInput from "./CommentInput";
 import CommentList from "./CommentList";
 
 import wrapWithLoadData from "./wrapWithLoadData";
-import {Provider} from "./react-redux";
 
 class CommentApp extends Component {
     static propTypes = {
@@ -58,18 +60,6 @@ class CommentApp extends Component {
 CommentApp = wrapWithLoadData(CommentApp, 'comments')
 export default CommentApp;
 
-function createStore(reducer) {
-    let state = null
-    const listeners = []
-    const subscribe = (listener) => listeners.push(listener)
-    const getState = () => state
-    const dispatch = (action) => {
-        state = reducer(state, action)
-        listeners.forEach((listener) => listener())
-    }
-    dispatch({})
-    return {getState, dispatch, subscribe}
-}
 
 const themeReducer = (state, action) => {
     if (!state)
@@ -85,6 +75,7 @@ const themeReducer = (state, action) => {
 }
 
 const store = createStore(themeReducer)
+
 
 
 

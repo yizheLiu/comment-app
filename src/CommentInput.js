@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import wrapWithLoadData from "./wrapWithLoadData";
 import ThemeSwitch from "./ThemeSwitch";
-import {connect} from "./react-redux";
+import {connect} from "react-redux";
 
 class CommentInput extends Component {
 
