@@ -5,14 +5,16 @@ import ThemeSwitch from "./ThemeSwitch";
 import {connect} from "./react-redux";
 
 class CommentInput extends Component {
-    static contextTypes = {
-        store: PropTypes.object
-    }
 
     static propTypes = {
         onSubmit: PropTypes.func,
         data: PropTypes.any,
-        saveData: PropTypes.func.isRequired
+        saveData: PropTypes.func.isRequired,
+        themeColor: PropTypes.string
+    }
+
+    static defaultProps = {
+        themeColor: ''
     }
 
     constructor(props) {
@@ -22,12 +24,6 @@ class CommentInput extends Component {
             content: '',
             themeColor: ''
         }
-    }
-
-    componentWillMount() {
-        const {store} = this.context
-        this._updateThemeColor()
-        store.subscribe(() => this._updateThemeColor())
     }
 
     componentDidMount() {
@@ -62,15 +58,9 @@ class CommentInput extends Component {
         this.props.saveData(event.target.value)
     }
 
-    _updateThemeColor() {
-        const {store} = this.context
-        const state = store.getState()
-        this.setState({themeColor: state.themeColor})
-    }
-
     render() {
         return (
-            <div className='comment-input' style={{borderColor: this.state.themeColor}}>
+            <div className='comment-input' style={{borderColor: this.props.themeColor}}>
                 <div className='comment-field'>
                     <span className='comment-field-name'>用户名:</span>
                     <div className='comment-field-input'>
@@ -86,7 +76,7 @@ class CommentInput extends Component {
                         <textarea
                             ref={(textarea) => this.textarea = textarea}
                             value={this.state.content}
-                            onChange={this.handleContentChange.bind(this)}></textarea>
+                            onChange={this.handleContentChange.bind(this)}/>
                     </div>
                 </div>
                 <div className='comment-field-button'>
@@ -99,5 +89,8 @@ class CommentInput extends Component {
 }
 
 CommentInput = wrapWithLoadData(CommentInput, 'username');
-
+const mapStateToProps = (state) => {
+    return {themeColor: state.themeColor}
+}
+CommentInput = connect(mapStateToProps)(CommentInput)
 export default CommentInput

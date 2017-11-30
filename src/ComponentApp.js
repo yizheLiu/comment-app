@@ -4,20 +4,12 @@ import CommentInput from "./CommentInput";
 import CommentList from "./CommentList";
 
 import wrapWithLoadData from "./wrapWithLoadData";
+import {Provider} from "./react-redux";
 
 class CommentApp extends Component {
     static propTypes = {
         data: PropTypes.any,
         saveData: PropTypes.func.isRequired
-    }
-    static childContextTypes = {
-        store: PropTypes.object
-    }
-
-    getChildContext() {
-        return {
-            store
-        }
     }
 
     constructor(props) {
@@ -50,13 +42,15 @@ class CommentApp extends Component {
 
     render() {
         return (
-            <div className='wrapper'>
-                <CommentInput
-                    onSubmit={this.handleSubmitComment.bind(this)}/>
-                <CommentList
-                    comments={this.state.comments}
-                    onDeleteComment={this.handleDeleteComment.bind(this)}/>
-            </div>
+            <Provider store={store}>
+                <div className='wrapper'>
+                    <CommentInput
+                        onSubmit={this.handleSubmitComment.bind(this)}/>
+                    <CommentList
+                        comments={this.state.comments}
+                        onDeleteComment={this.handleDeleteComment.bind(this)}/>
+                </div>
+            </Provider>
         );
     }
 }

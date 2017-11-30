@@ -1,28 +1,24 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Comment from "./Comment";
+import {connect} from "./react-redux";
 
 class CommentList extends Component {
-    static contextTypes = {
-        store: PropTypes.object
-    }
+
     static propTypes = {
         comments: PropTypes.array,
-        onDeleteComment: PropTypes.func
+        onDeleteComment: PropTypes.func,
+        themeColor: PropTypes.string
     }
+
     static defaultProps = {
         comments: [],
+        themeColor: ''
     }
 
     constructor() {
         super()
         this.state = {themeColor: ''}
-    }
-
-    componentWillMount() {
-        const {store} = this.context
-        this._updateThemeColor()
-        store.subscribe(()=>this._updateThemeColor())
     }
 
     handleDeletedComment(index) {
@@ -31,15 +27,10 @@ class CommentList extends Component {
         }
     }
 
-    _updateThemeColor() {
-        const {store} = this.context
-        const state = store.getState()
-        this.setState({themeColor: state.themeColor})
-    }
 
     render() {
         return (
-            <div style={{borderColor:this.state.themeColor}} className='comment-list'>
+            <div style={{borderColor: this.props.themeColor}} className='comment-list'>
                 {
                     this.props.comments.map((comment, i) => {
                         return (
@@ -56,4 +47,8 @@ class CommentList extends Component {
     }
 }
 
+const mapStatePros = (state) => {
+    return {themeColor: state.themeColor }
+}
+CommentList = connect(mapStatePros)(CommentList)
 export default CommentList;
