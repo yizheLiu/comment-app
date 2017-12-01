@@ -1,26 +1,25 @@
 import React, {Component} from 'react';
-import PropTypes from 'prop-types';
-import wrapWithLoadData from "./wrapWithLoadData";
-import ThemeSwitch from "./ThemeSwitch";
-import {connect} from "react-redux";
+import PropTypes from 'prop-types'
+import ThemeSwitch from "../containers/ThemeSwitch";
 
 class CommentInput extends Component {
 
     static propTypes = {
+        username: PropTypes.any,
         onSubmit: PropTypes.func,
-        data: PropTypes.any,
-        saveData: PropTypes.func.isRequired,
+        onUserNameInputBlur: PropTypes.func.isRequired,
         themeColor: PropTypes.string
     }
 
     static defaultProps = {
-        themeColor: ''
+        themeColor: '',
+        username: ''
     }
 
     constructor(props) {
         super(props);
         this.state = {
-            username: props.data || [],
+            username: props.username,
             content: '',
             themeColor: ''
         }
@@ -45,17 +44,19 @@ class CommentInput extends Component {
 
     handleSubmit() {
         if (this.props.onSubmit) {
-            const {username, content} = this.state;
-            const createdTime = new Date().getTime();
             this.props.onSubmit({
-                username, content, createdTime
+                username: this.state.username,
+                content: this.state.content,
+                createdTime:new Date().getTime()
             })
             this.setState({content: ''})
         }
     }
 
     handleUsernameBlur(event) {
-        this.props.saveData(event.target.value)
+        if (this.props.onUserNameInputBlur) {
+            this.props.onUserNameInputBlur(event.target.value)
+        }
     }
 
     render() {
@@ -88,9 +89,4 @@ class CommentInput extends Component {
     }
 }
 
-CommentInput = wrapWithLoadData(CommentInput, 'username');
-const mapStateToProps = (state) => {
-    return {themeColor: state.themeColor}
-}
-CommentInput = connect(mapStateToProps)(CommentInput)
 export default CommentInput

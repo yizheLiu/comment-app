@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import {connect} from "react-redux";
+import {changeColor} from "../reducers/comments";
 
 class ThemeSwitch extends Component {
     static propTypes = {
@@ -46,7 +47,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         onSwitchColor: (color) => {
-            dispatch({type: 'CHANGE_COLOR', themeColor: color})
+            dispatch(changeColor(color))
         }
     }
 }

@@ -15,7 +15,10 @@ class Comment extends Component {
 
     componentWillMount() {
         this._updateTimeString();
-        this._timer = setInterval(this._updateTimeString.bind(this), 5000)
+        this._timer = setInterval(
+            this._updateTimeString.bind(this),
+            5000
+        )
     }
 
     componentWillUnmount() {
